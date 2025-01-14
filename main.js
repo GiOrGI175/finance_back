@@ -1,10 +1,15 @@
 const express = require('express');
 const connectToDb = require('./db/connectToMondoDb');
+const usersRouter = require('./routes/users/users.router');
+const potsRouter = require('./routes/pots/pots.router');
 
 const app = express();
 app.use(express.json());
 
 connectToDb();
+
+app.use('/users', usersRouter);
+app.use('/pots', potsRouter);
 
 // app.use('');
 
