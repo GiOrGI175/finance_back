@@ -45,44 +45,72 @@ const updatePotById = async (req, res) => {
 
 const addAmount = async (req, res) => {
   const { id } = req.params;
-
   const { Add } = req.body;
 
-  const pot = await potModel.findById(id);
+  if (!Add || Add <= 0) {
+    return res
+      .status(400)
+      .json({ error: 'Add amount must be a positive number' });
+  }
 
+  const pot = await potModel.findById(id);
   if (!pot) return res.status(404).json({ error: 'Pot not found' });
 
-  const target = pot.Target;
-  const amount = pot.Amount;
+  const { Target, Amount } = pot;
 
-  if (amount + Add > target)
-    return res.status(404).json({ error: 'u can not Add' });
+  if (Amount + Add > Target) {
+    return res.status(422).json({ error: 'Cannot add, exceeds target' });
+  }
 
-  const updateRequest = {};
-  if (Add) updateRequest.Amount = amount + Add;
+  const updatedAmount = Amount + Add;
+  const updatedProcent = Math.min(
+    Math.floor((updatedAmount / pot.Target) * 1000) / 10,
+    100
+  );
+
+  const updateRequest = {
+    Amount: updatedAmount,
+    procent: updatedProcent,
+  };
+
   const updatedPot = await potModel.findByIdAndUpdate(id, updateRequest, {
     new: true,
   });
+
   res.json({ updatedPot });
 };
-
 const WithdrawAmount = async (req, res) => {
   const { id } = req.params;
   const { Withdraw } = req.body;
 
-  const pot = await potModel.findById(id);
+  if (!Withdraw || Withdraw <= 0) {
+    return res
+      .status(400)
+      .json({ error: 'Withdraw amount must be a positive number' });
+  }
 
+  const pot = await potModel.findById(id);
   if (!pot) return res.status(404).json({ error: 'Pot not found' });
 
   if (Withdraw > pot.Amount)
-    return res.status(400).json({ Message: 'not enought' });
+    return res.status(400).json({ message: 'Not enough funds' });
 
-  const updateRequest = {};
-  updateRequest.Amount = pot.Amount - Withdraw;
+  const updatedAmount = pot.Amount - Withdraw;
+
+  const updatedProcent = Math.min(
+    Math.floor((updatedAmount / pot.Target) * 1000) / 10,
+    100
+  );
+
+  const updateRequest = {
+    Amount: updatedAmount,
+    procent: updatedProcent,
+  };
 
   const updatedPot = await potModel.findByIdAndUpdate(id, updateRequest, {
     new: true,
   });
+
   res.json({ updatedPot });
 };
 
