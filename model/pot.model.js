@@ -10,6 +10,10 @@ const PotShema = new mongoose.Schema({
   theme: {
     type: String,
   },
+  procent: {
+    type: Number,
+    default: 0,
+  },
   Amount: {
     type: Number,
     default: 0,

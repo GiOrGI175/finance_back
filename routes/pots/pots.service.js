@@ -95,3 +95,55 @@ module.exports = {
   addAmount,
   WithdrawAmount,
 };
+
+// const calculatePercentage = (amount, target) => {
+//   if (target && target > 0) {
+//     return Math.min((amount / target) * 100, 100);
+//   }
+//   return 0;
+// };
+
+// const addAmount = async (req, res) => {
+//   const { id } = req.params;
+//   const { Add } = req.body;
+
+//   const pot = await potModel.findById(id);
+//   if (!pot) return res.status(404).json({ error: 'Pot not found' });
+
+//   const newAmount = pot.Amount + Add;
+//   if (newAmount > pot.Target)
+//     return res
+//       .status(400)
+//       .json({ error: 'You cannot add more than the target' });
+
+//   const updateRequest = {
+//     Amount: newAmount,
+//     procent: calculatePercentage(newAmount, pot.Target),
+//   };
+//   const updatedPot = await potModel.findByIdAndUpdate(id, updateRequest, {
+//     new: true,
+//   });
+//   res.json({ updatedPot });
+// };
+
+// const WithdrawAmount = async (req, res) => {
+//   const { id } = req.params;
+//   const { Withdraw } = req.body;
+
+//   const pot = await potModel.findById(id);
+//   if (!pot) return res.status(404).json({ error: 'Pot not found' });
+
+//   const newAmount = pot.Amount - Withdraw;
+//   if (Withdraw > pot.Amount)
+//     return res.status(400).json({ Message: 'Not enough money in the pot' });
+
+//   const updateRequest = {
+//     Amount: newAmount,
+//     procent: calculatePercentage(newAmount, pot.Target),
+//   };
+
+//   const updatedPot = await potModel.findByIdAndUpdate(id, updateRequest, {
+//     new: true,
+//   });
+//   res.json({ updatedPot });
+// };
