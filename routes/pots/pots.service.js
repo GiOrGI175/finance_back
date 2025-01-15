@@ -68,6 +68,7 @@ const addAmount = async (req, res) => {
 
 const WithdrawAmount = async (req, res) => {
   const { id } = req.params;
+  const { Withdraw } = req.body;
 
   const pot = await potModel.findById(id);
 
@@ -76,9 +77,8 @@ const WithdrawAmount = async (req, res) => {
   if (Withdraw > pot.Amount)
     return res.status(400).json({ Message: 'not enought' });
 
-  const { Withdraw } = req.body;
   const updateRequest = {};
-  if (Withdraw) updateRequest.Amount = Amount - Withdraw;
+  updateRequest.Amount = pot.Amount - Withdraw;
 
   const updatedPot = await potModel.findByIdAndUpdate(id, updateRequest, {
     new: true,

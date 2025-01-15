@@ -19,7 +19,7 @@ potsRouter.post('/', createPot);
 potsRouter.get('/:id', checkValidObjectId, getPotById);
 potsRouter.delete('/:id', checkValidObjectId, deletePot);
 potsRouter.put('/:id', checkValidObjectId, updatePotById);
-potsRouter.post('/add/:id', addAmount);
-potsRouter.post('/withdraw/:id', WithdrawAmount);
+potsRouter.post('/:id/add', addAmount);
+potsRouter.post('/:id/withdraw', WithdrawAmount);
 
 module.exports = potsRouter;

@@ -12,6 +12,7 @@ const PotShema = new mongoose.Schema({
   },
   Amount: {
     type: Number,
+    default: 0,
   },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
 });

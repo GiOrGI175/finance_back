@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
   password: {
-    type: String | Number,
+    type: String,
   },
   transactions: {
     type: [mongoose.Schema.Types.ObjectId],
