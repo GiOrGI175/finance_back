@@ -6,12 +6,13 @@ const userRouter = require('./routes/users/users.router');
 const app = express();
 const cors = require("cors")
 const corsOptions = {
-  origin: 'https://finance-orcin-tau.vercel.app',
+  origin: ['https://finance-orcin-tau.vercel.app' ,'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
 app.use(express.json());
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 connectToDb();
 
