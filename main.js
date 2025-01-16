@@ -1,5 +1,8 @@
 const express = require('express');
+const cors = require('cors');
 const connectToDb = require('./db/connectToMondoDb');
+const usersRouter = require('./routes/users/users.router');
+const potsRouter = require('./routes/pots/pots.router');
 const authRouter = require('./auth/auth.router');
 const userRouter = require('./routes/users/users.router');
 
@@ -15,6 +18,9 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 
 connectToDb();
+
+app.use('/users', usersRouter);
+app.use('/pots', potsRouter);
 
 // app.use('');
 
