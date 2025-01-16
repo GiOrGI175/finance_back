@@ -18,5 +18,5 @@ connectToDb();
 app.use("/auth",authRouter)
 app.use("/users", userRouter)
 app.listen(3001, () => {
-  console.log('running on: http://localhost:3001 ');
+  console.log('running on: http://localhost:10000 ');
 });
