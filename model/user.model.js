@@ -6,9 +6,10 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    lowercase:true,
   },
   password: {
-    type: String | Number,
+    type: mongoose.Schema.Types.Mixed
   },
   transactions: {
     type: [mongoose.Schema.Types.ObjectId],
