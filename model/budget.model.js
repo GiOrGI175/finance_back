@@ -1,5 +1,4 @@
 const { default: mongoose } = require('mongoose');
-const { type } = require('os');
 
 const budgetShema = new mongoose.Schema({
   budgetName: {
