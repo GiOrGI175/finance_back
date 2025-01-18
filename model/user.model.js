@@ -34,17 +34,17 @@ const userSchema = new mongoose.Schema({
   balance: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "balance",
-    default: [0],
+    default: [],
   },
   income: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "income",
-    default: [0],
+    default: [],
   },
   expenses: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "expenses",
-    default: [0],
+    default: [],
   },
 });
 

@@ -1,5 +1,4 @@
 const express = require('express');
-
 const connectToDb = require('./db/connectToMondoDb');
 const usersRouter = require('./routes/users/users.router');
 const potsRouter = require('./routes/pots/pots.router');
