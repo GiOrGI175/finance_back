@@ -19,7 +19,7 @@ const budgetShema = new mongoose.Schema({
   procent: {
     type: Number,
   },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+  transactions: [{ type: mongoose.Schema.Types.ObjectId, ref: 'transaction' }],
 });
 
 module.exports = mongoose.model('budget', budgetShema);

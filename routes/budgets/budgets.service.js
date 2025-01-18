@@ -1,14 +1,61 @@
 const budgetModel = require('../../model/budget.model');
+const TransactionModel = require('../../model/transactions.model');
 
 const getAllBudgets = async (req, res) => {
-  const budgets = await budgetModel.find();
+  const budgets = await budgetModel.find().populate('transaction');
 
   res.json(budgets);
 };
 
 const createBudget = async (req, res) => {
-  const budget = await budgetModel.create(req.body);
-  res.json(budget);
+  const { budgetName, Target, theme } = req.body;
+
+  if (!budgetName || !Target || !theme) {
+    return res.status(400).json({ message: 'Required fields are missing' });
+  }
+
+  try {
+    const existingTransactions = await TransactionModel.find({
+      category: budgetName,
+    });
+
+    const newBudget = await budgetModel.create({
+      budgetName,
+      Target,
+      theme,
+    });
+
+    newBudget.transactions = existingTransactions.map(
+      (transaction) => transaction._id
+    );
+
+    await newBudget.save();
+
+    const populatedBudget = await budgetModel
+      .findById(newBudget._id)
+      .populate('transactions');
+
+    const spent = populatedBudget.transactions.reduce(
+      (total, transaction) => total + transaction.Amount,
+      0
+    );
+    const remaining = populatedBudget.Target - spent;
+    const percent = Math.min(
+      Math.round((spent / populatedBudget.Target) * 100),
+      100
+    );
+
+    populatedBudget.Spent = spent;
+    populatedBudget.Remaining = remaining;
+    populatedBudget.procent = percent;
+
+    res.status(201).json({ newBudget: populatedBudget });
+  } catch (err) {
+    console.error(err);
+    if (!res.headersSent) {
+      res.status(500).json({ message: 'Error creating budget', error: err });
+    }
+  }
 };
 
 const getBudgetById = async (req, res) => {
@@ -97,10 +144,10 @@ const updateBudgetById = async (req, res) => {
 
 //   const updatedAmount = pot.Amount - Withdraw;
 
-//   const updatedProcent = Math.min(
-//     Math.round((updatedAmount / pot.Target) * 100),
-//     100
-//   );
+// const updatedProcent = Math.min(
+//   Math.round((updatedAmount / pot.Target) * 100),
+//   100
+// );
 
 //   const updateRequest = {
 //     Amount: updatedAmount,
