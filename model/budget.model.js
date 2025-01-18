@@ -10,13 +10,13 @@ const budgetShema = new mongoose.Schema({
   theme: {
     type: String,
   },
-  Maximum: {
-    type: Number,
-  },
   Spent: {
     type: Number,
   },
   Remaining: {
+    type: Number,
+  },
+  procent: {
     type: Number,
   },
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
