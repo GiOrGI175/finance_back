@@ -41,7 +41,13 @@ authRouter.post("/sign-in",async (req,res)=>{
 
 authRouter.get("/current-user", isAuth, async (req,res)=>{
   const user = await userModel.findById(req.userId)
-  res.json(user)
+  res.json({
+    fullName: user.fullName,
+    email: user.email,
+    balance: user.balance,
+    income: user.income,
+    expenses: user.expenses,
+  });
 })
 
 module.exports = authRouter;
