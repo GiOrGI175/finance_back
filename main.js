@@ -5,9 +5,11 @@ const usersRouter = require('./routes/users/users.router');
 const potsRouter = require('./routes/pots/pots.router');
 const authRouter = require('./auth/auth.router');
 const userRouter = require('./routes/users/users.router');
+const transactionRouter = require("./routes/transaction/transaction.router")
 
 const app = express();
-const cors = require("cors")
+const cors = require("cors");
+const transactionsModel = require('./model/transactions.model');
 const corsOptions = {
   origin: ['https://finance-orcin-tau.vercel.app' ,'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -29,6 +31,13 @@ app.use('/pots', potsRouter);
 // });
 app.use("/auth",authRouter)
 app.use("/users", userRouter)
+app.use('/transactions', transactionRouter);
+app.use("/transactions/getTransaction",transactionRouter);
+app.get("/add", async(req,res)=>{
+  await transactionsModel.insertMany()
+
+})
+
 app.listen(3001, () => {
   console.log('running on: http://localhost:3001 ');
 });
