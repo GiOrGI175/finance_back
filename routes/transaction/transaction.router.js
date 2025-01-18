@@ -24,7 +24,7 @@ transactionRouter.post("/transaction", async (req, res) => {
     res.status(500).json({ message: "Error creating transaction" });
   }
 });
-transactionRouter.get("/getTransaction", async (req, res) => {
+transactionRouter.get("/transaction", async (req, res) => {
   try {
     const transaction = await transactionModel.find();
     res.json(transaction);
