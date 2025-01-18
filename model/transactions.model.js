@@ -8,7 +8,7 @@ const transactionShema = new mongoose.Schema({
     type: String,
   },
   TransactionDate: {
-    type: Number,
+    type: Date,
   },
   Amount: {
     type: Number,

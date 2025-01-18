@@ -1,4 +1,4 @@
-const { default: mongoose } = require('mongoose');
+const { default: mongoose } = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   fullName: {
@@ -6,31 +6,46 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    lowercase:true,
+    lowercase: true,
   },
   password: {
-    type: mongoose.Schema.Types.Mixed
+    type: mongoose.Schema.Types.Mixed,
   },
   transactions: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'transaction',
+    ref: "transaction",
     default: [],
   },
   budgets: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'budget',
+    ref: "budget",
     default: [],
   },
   pots: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'pot',
+    ref: "pot",
     default: [],
   },
   bills: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'bill',
+    ref: "bill",
     default: [],
+  },
+  balance: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "balance",
+    default: [0],
+  },
+  income: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "income",
+    default: [0],
+  },
+  expenses: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "expenses",
+    default: [0],
   },
 });
 
-module.exports = mongoose.model('user', userSchema);
+module.exports = mongoose.model("user", userSchema);
