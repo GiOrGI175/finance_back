@@ -7,6 +7,7 @@ const authRouter = require('./auth/auth.router');
 const userRouter = require('./routes/users/users.router');
 const transactionRouter = require("./routes/transaction/transaction.router")
 
+
 const app = express();
 const cors = require("cors");
 const transactionsModel = require('./model/transactions.model');
@@ -32,7 +33,7 @@ app.use('/pots', potsRouter);
 app.use("/auth",authRouter)
 app.use("/users", userRouter)
 app.use('/transactions', transactionRouter);
-app.use("/transactions/getTransaction",transactionRouter);
+// app.use("/transaction",transactionRouter);
 app.get("/add", async(req,res)=>{
   await transactionsModel.insertMany()
 
