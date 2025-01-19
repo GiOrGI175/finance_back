@@ -30,6 +30,8 @@ app.use("/bills", billsRouter);
 // });
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
+app.use("/transactions", transactionRouter);
+
 app.listen(3001, () => {
   console.log("running on: http://localhost:3001 ");
 });

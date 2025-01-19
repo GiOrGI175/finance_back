@@ -1,4 +1,4 @@
-const { default: mongoose } = require('mongoose');
+const { default: mongoose } = require("mongoose");
 
 const transactionShema = new mongoose.Schema({
   RecipientOrSender: {
@@ -8,12 +8,13 @@ const transactionShema = new mongoose.Schema({
     type: String,
   },
   TransactionDate: {
-    type: Number,
+    type: Date,
+    default: Date.now,
   },
   Amount: {
     type: Number,
   },
-  user: { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
 });
 
-module.exports = mongoose.model('transaction', transactionShema);
+module.exports = mongoose.model("transaction", transactionShema);
