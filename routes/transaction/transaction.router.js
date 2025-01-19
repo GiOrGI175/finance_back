@@ -5,17 +5,18 @@ const transactionModel = require("../../model/transactions.model.js");
 const transactionRouter = Router();
 
 transactionRouter.post("/transaction", async (req, res) => {
-  const { RecipientOrSender, category, TransactionDate, Amount } = req.body;
-
-  if (!RecipientOrSender || !category || !TransactionDate || !Amount) {
+  const { RecipientOrSender, category, Amount } = req.body;
+  console.log(RecipientOrSender,category,Amount);
+  if (!RecipientOrSender || !category || !Amount) {
     return res.status(400).json({ message: "All fields are required" });
   }
+  
 
   try {
     await transactionModel.create({
       RecipientOrSender,
       category,
-      TransactionDate,
+
       Amount,
     });
     res.status(201).json({ message: "Transaction added successfully" });
