@@ -10,6 +10,7 @@ const app = express();
 const cors = require("cors");
 // const transactionsModel = require('./model/transactions.model');
 const budgetsRouter = require("./routes/budgets/budgets.router");
+const billsRouter = require("./routes/bills/bills.router");
 
 app.use(express.json());
 app.use(cors());
@@ -28,7 +29,7 @@ app.use("/budgets", budgetsRouter);
 app.use("/auth", authRouter);
 app.use("/users", userRouter);
 app.use("/transactions", transactionRouter);
-app.use("/bills");
+app.use("/bills", billsRouter);
 
 app.listen(3001, () => {
   console.log("running on: http://localhost:3001 ");
