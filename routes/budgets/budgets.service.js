@@ -2,9 +2,31 @@ const budgetModel = require('../../model/budget.model');
 const TransactionModel = require('../../model/transactions.model');
 
 const getAllBudgets = async (req, res) => {
-  const budgets = await budgetModel.find().populate('transaction');
+  try {
+    const budgets = await budgetModel.find().populate('transactions');
 
-  res.json(budgets);
+    for (let budget of budgets) {
+      const transactions = await TransactionModel.find({
+        category: budget.budgetName,
+      });
+
+      const totalSpent = transactions.reduce(
+        (total, transaction) => total + transaction.Amount,
+        0
+      );
+
+      budget.Spent = totalSpent;
+      budget.Remaining = budget.Target - totalSpent;
+      budget.procent = (totalSpent / budget.Target) * 100;
+
+      await budget.save();
+    }
+
+    res.json(budgets);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching budgets', error: err });
+  }
 };
 
 const createBudget = async (req, res) => {
@@ -31,23 +53,30 @@ const createBudget = async (req, res) => {
 
     await newBudget.save();
 
+    const totalSpent = existingTransactions.reduce(
+      (total, transaction) => total + transaction.Amount,
+      0
+    );
+
+    newBudget.Spent = totalSpent;
+    newBudget.Remaining = newBudget.Target - totalSpent;
+    newBudget.procent = (totalSpent / newBudget.Target) * 100;
+
+    await newBudget.save();
+
     const populatedBudget = await budgetModel
       .findById(newBudget._id)
       .populate('transactions');
 
-    const spent = populatedBudget.transactions.reduce(
-      (total, transaction) => total + transaction.Amount,
-      0
-    );
-    const remaining = populatedBudget.Target - spent;
-    const percent = Math.min(
-      Math.round((spent / populatedBudget.Target) * 100),
-      100
-    );
-
-    populatedBudget.Spent = spent;
-    populatedBudget.Remaining = remaining;
-    populatedBudget.procent = percent;
+    if (
+      !populatedBudget.transactions ||
+      populatedBudget.transactions.length === 0
+    ) {
+      return res.status(200).json({
+        message: 'Budget created without transactions',
+        newBudget: populatedBudget,
+      });
+    }
 
     res.status(201).json({ newBudget: populatedBudget });
   } catch (err) {
@@ -77,89 +106,51 @@ const deleteBudget = async (req, res) => {
 
 const updateBudgetById = async (req, res) => {
   const { id } = req.params;
-
   const { budgetName, Target, theme } = req.body;
+
   const updateRequest = {};
   if (budgetName) updateRequest.budgetName = budgetName;
   if (Target) updateRequest.Target = Target;
   if (theme) updateRequest.theme = theme;
 
-  const updatedBudget = await budgetModel.findByIdAndUpdate(id, updateRequest, {
-    new: true,
-  });
-  res.json({ updatedBudget });
+  try {
+    const updatedBudget = await budgetModel.findByIdAndUpdate(
+      id,
+      updateRequest,
+      {
+        new: true,
+      }
+    );
+
+    if (!updatedBudget) {
+      return res.status(404).json({ message: 'Budget not found' });
+    }
+
+    const existingTransactions = await TransactionModel.find({
+      category: updatedBudget.budgetName,
+    });
+
+    const totalSpent = existingTransactions.reduce(
+      (total, transaction) => total + transaction.Amount,
+      0
+    );
+
+    updatedBudget.Spent = totalSpent;
+    updatedBudget.Remaining = updatedBudget.Target - totalSpent;
+    updatedBudget.procent = (totalSpent / updatedBudget.Target) * 100;
+
+    await updatedBudget.save();
+
+    const populatedBudget = await budgetModel
+      .findById(updatedBudget._id)
+      .populate('transactions');
+
+    res.json({ updatedBudget: populatedBudget });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error updating budget', error: err });
+  }
 };
-
-// const addAmount = async (req, res) => {
-//   const { id } = req.params;
-//   const { Add } = req.body;
-
-//   if (!Add || Add <= 0) {
-//     return res
-//       .status(400)
-//       .json({ error: 'Add amount must be a positive number' });
-//   }
-
-//   const pot = await budgetModel.findById(id);
-//   if (!pot) return res.status(404).json({ error: 'Pot not found' });
-
-//   const { Target, Amount } = pot;
-
-//   if (Amount + Add > Target) {
-//     return res.status(422).json({ error: 'Cannot add, exceeds target' });
-//   }
-
-//   const updatedAmount = Amount + Add;
-//   const updatedProcent = Math.min(
-//     Math.round((updatedAmount / pot.Target) * 100),
-//     100
-//   );
-
-//   const updateRequest = {
-//     Amount: updatedAmount,
-//     procent: updatedProcent,
-//   };
-
-//   const updatedPot = await budgetModel.findByIdAndUpdate(id, updateRequest, {
-//     new: true,
-//   });
-
-//   res.json({ updatedPot });
-// };
-// const WithdrawAmount = async (req, res) => {
-//   const { id } = req.params;
-//   const { Withdraw } = req.body;
-
-//   if (!Withdraw || Withdraw <= 0) {
-//     return res
-//       .status(400)
-//       .json({ error: 'Withdraw amount must be a positive number' });
-//   }
-
-//   const pot = await budgetModel.findById(id);
-//   if (!pot) return res.status(404).json({ error: 'Pot not found' });
-
-//   if (Withdraw > pot.Amount)
-//     return res.status(400).json({ message: 'Not enough funds' });
-
-//   const updatedAmount = pot.Amount - Withdraw;
-
-// const updatedProcent = Math.min(
-//   Math.round((updatedAmount / pot.Target) * 100),
-//   100
-// );
-
-//   const updateRequest = {
-//     Amount: updatedAmount,
-//     procent: updatedProcent,
-//   };
-
-//   const updatedPot = await budgetModel.findByIdAndUpdate(id, updateRequest, {
-//     new: true,
-//   });
-
-//   res.json({ updatedPot });
-// };
 
 module.exports = {
   getAllBudgets,
